@@ -1,14 +1,25 @@
 use clipboard::ClipboardContext;
 use clipboard::ClipboardProvider;
-use std::env;
+use std::io;
 
 fn main() {
     let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
 
-    let text: String = env::args()
-        .skip(1)
-        .next()
-        .expect("Expected cmdline argument");
+    let mut text: String = String::new();
+
+    loop {
+        let mut line = String::new();
+
+        io::stdin()
+            .read_line(&mut line)
+            .expect("Could not read from stdin");
+
+        if line.starts_with("END") {
+            break;
+        }
+
+        text += line.as_str();
+    }
 
     let mut prev_char: char = '?';
     let mut laut_text: String = String::new();
