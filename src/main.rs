@@ -39,7 +39,11 @@ fn main() {
     for char in text.chars() {
         match char {
             ' ' => {}
-            '\u{30b}' => {}
+            '\u{30b}' => {
+                if prev_char == ' ' {
+                    laut_text += " ";
+                }
+            }
             _ => {
                 laut_text += handle_laut(prev_char, char).as_str();
             }
