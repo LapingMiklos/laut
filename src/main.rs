@@ -27,25 +27,18 @@ fn main() {
     let char_vec = text.chars().collect::<Vec<char>>();
     let mut windows = char_vec.windows(3);
 
+    let to_laut = |c: &char| match c {
+        'o' => 'ő',
+        'O' => 'Ő',
+        'u' => 'ű',
+        'U' => 'Ű',
+        _ => c.to_owned(),
+    };
+
     while let Some(chars) = windows.next() {
         match chars {
-            [' ', '\u{30b}', 'o'] => {
-                laut_text += "ő";
-                windows.next();
-                windows.next();
-            }
-            [' ', '\u{30b}', 'O'] => {
-                laut_text += "Ő";
-                windows.next();
-                windows.next();
-            }
-            [' ', '\u{30b}', 'u'] => {
-                laut_text += "ű";
-                windows.next();
-                windows.next();
-            }
-            [' ', '\u{30b}', 'U'] => {
-                laut_text += "Ű";
+            [' ', '\u{30b}', t] => {
+                laut_text += &to_laut(t).to_string();
                 windows.next();
                 windows.next();
             }
