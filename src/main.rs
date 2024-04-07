@@ -20,35 +20,38 @@ fn main() {
 
         text += line.as_str();
     }
+    text += "??";
 
-    let mut prev_char: char = '?';
     let mut laut_text: String = String::new();
 
-    let handle_laut = |prev: char, curr: char| match prev {
-        ' ' => format!(" {}", curr),
-        '\u{30b}' => match curr {
-            'o' => String::from("ő"),
-            'u' => String::from("ű"),
-            'O' => String::from("Ő"),
-            'U' => String::from("Ű"),
-            _ => format!("{}", curr),
-        },
-        _ => format!("{}", curr),
-    };
+    let char_vec = text.chars().collect::<Vec<char>>();
+    let mut windows = char_vec.windows(3);
 
-    for char in text.chars() {
-        match char {
-            ' ' => {}
-            '\u{30b}' => {
-                if prev_char == ' ' {
-                    laut_text += " ";
-                }
+    while let Some(chars) = windows.next() {
+        match chars {
+            [' ', '\u{30b}', 'o'] => {
+                laut_text += "ő";
+                windows.next();
+                windows.next();
             }
-            _ => {
-                laut_text += handle_laut(prev_char, char).as_str();
+            [' ', '\u{30b}', 'O'] => {
+                laut_text += "Ő";
+                windows.next();
+                windows.next();
             }
+            [' ', '\u{30b}', 'u'] => {
+                laut_text += "ű";
+                windows.next();
+                windows.next();
+            }
+            [' ', '\u{30b}', 'U'] => {
+                laut_text += "Ű";
+                windows.next();
+                windows.next();
+            }
+            [f, _, _] => laut_text += &format!("{}", f),
+            _ => {}
         }
-        prev_char = char;
     }
 
     println!("{}", laut_text);
